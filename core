@@ -1,0 +1,51 @@
+#!/bin/bash
+
+install() {
+  # prepare vars
+  local name="$PACKAGE_CORE_NAME"
+
+  log::info "[$(timestamp)][package][$name] preparing ..."
+
+  # get system os/arch
+  local arch="$PACKAGE_OS_ARCH"
+  local kernel="$PACKAGE_OS_KERNEL"
+  local platform="$PACKAGE_OS_PLATFORM"
+  # usr_bin_dir
+  local usr_bin_dir="$PACKAGE_USER_BIN_DIR"
+  local tmp_dir="$PACKAGE_TMP_DIR"
+
+  # files
+  local tmp_file="$name.tar.gz"
+  local bin_file="./${name}-${PACKAGE_CORE_VERSION#v}-${platform}-${arch}/$name"
+
+  # prepare context
+  cd $tmp_dir
+
+  # reference: https://sapling-scm.com/docs/introduction/installation
+
+  if [ "$(os::is_ubuntu)" = "true" ]; then
+    if [ "$arch" = "arm64" ]; then
+      local name="sapling_linux_amd64.deb"
+      os::download $name https://github.com/facebook/sapling/releases/download/20221116-203146-2c1a971a/sapling_0.0-20221116.203146.2c1a971a_amd64.Ubuntu22.04.deb
+      sudo apt install -y ./$name
+    else
+      log::error "unsupport arch: $arch"
+      return 1
+    fi
+  elif [ "$(os::is_macos)" = "true" ]; then
+    if [ "$arch" = "arm64" ]; then
+      local name="sapling_darwin_arm64.tar.gz"
+      os::download $name https://github.com/facebook/sapling/releases/download/20221116-203146-2c1a971a/sapling_0.0-20221116.203146.2c1a971a.arm64_monterey.bottle.tar.gz
+      brew install ./$name
+    elif [ "$arch" = "amd64" ]; then
+      local name="sapling_darwin_amd64.tar.gz"
+      os::download $name https://github.com/facebook/sapling/releases/download/20221116-203146-2c1a971a/sapling_0.0-20221116.203146.2c1a971a.monterey.bottle.tar.gz
+      brew install ./$name
+    else
+      log::error "unsupport arch: $arch"
+      return 1
+    fi
+  fi
+}
+
+export -f install

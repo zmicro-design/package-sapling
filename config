@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PACKAGE_CORE_NAME="sapling"
+export PACKAGE_CORE_VERSION=20221116-203146-2c1a971a
+export PACKAGE_CORE_RELEASE_DOWNLOAD="https://github.com/9seconds/sapling/releases/download"
