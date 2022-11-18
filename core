@@ -23,16 +23,7 @@ install() {
 
   # reference: https://sapling-scm.com/docs/introduction/installation
 
-  if [ "$(os::is_ubuntu)" = "true" ]; then
-    if [ "$arch" = "arm64" ]; then
-      local name="sapling_linux_amd64.deb"
-      os::download $name https://github.com/facebook/sapling/releases/download/20221116-203146-2c1a971a/sapling_0.0-20221116.203146.2c1a971a_amd64.Ubuntu22.04.deb
-      sudo apt install -y ./$name
-    else
-      log::error "unsupport arch: $arch"
-      return 1
-    fi
-  elif [ "$(os::is_macos)" = "true" ]; then
+  if [ "$(os::is_macos)" = "true" ]; then
     if [ "$arch" = "arm64" ]; then
       local name="sapling_darwin_arm64.tar.gz"
       os::download $name https://github.com/facebook/sapling/releases/download/20221116-203146-2c1a971a/sapling_0.0-20221116.203146.2c1a971a.arm64_monterey.bottle.tar.gz
@@ -45,7 +36,21 @@ install() {
       log::error "unsupport arch: $arch"
       return 1
     fi
+  elif [ "$(os::is_ubuntu)" = "true" ]; then
+    if [ "$arch" = "arm64" ]; then
+      local name="sapling_linux_amd64.deb"
+      os::download $name https://github.com/facebook/sapling/releases/download/20221116-203146-2c1a971a/sapling_0.0-20221116.203146.2c1a971a_amd64.Ubuntu22.04.deb
+      sudo apt install -y ./$name
+    else
+      log::error "unsupport arch: $arch"
+      return 1
+    fi
+  else
+    log::error "unsupport platform: $platform"
+    return 1
   fi
+
+  rm -rf $tmp_dir
 }
 
 export -f install
