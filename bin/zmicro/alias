@@ -5,11 +5,11 @@ help() {
   echo "  zmicro sapling <args ...>"
   echo ""
 
-  sapling --help
+  sl --help
 }
 
 version() {
-  sapling --version
+  sl --version
 }
 
 core() {
@@ -21,7 +21,7 @@ core() {
     version
     ;;
   *)
-    sapling "$@"
+    sl "$@"
     ;;
   esac
 }
